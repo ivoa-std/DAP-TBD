@@ -1,5 +1,6 @@
 \documentclass[11pt,a4paper]{ivoa}
 \input tthdefs
+\marginparwidth=4cm
 
 \newcommand{\xtype}[1]{\texttt{#1}}
 
@@ -22,43 +23,44 @@
 
 \editor{Patrick Dowler, Fran\c cois Bonnarel, Gregory Dubois-Felsmann}
 
-\previousversion{}
+\previousversion{This is the first published version}
 
 \begin{document}
 \begin{abstract}
-The Simple Image Access protocol (SIA) provides capabilities for the discovery, description, access, and retrieval of multi-dimensional image datasets, including 2-D images as well as datacubes of three or more dimensions.  SIA data discovery is based on the ObsCore Data Model (ObsCoreDM, \cite{std:OBSCORE}), which primarily describes data products by the physical axes (spatial, spectral, time, and polarization). Image datasets with dimension greater than 2 are often referred to as \textit{datacubes}, \textit{cube} or \textit{image cube} datasets and may be considered examples of \textit{hypercube} or \textit{n-cube} data.  In this document the term “image” refers to general multi-dimensional datasets and is synonymous with these other terms unless the image dimensionality is otherwise specified. \\
-SIA provides capabilities for image discovery and access. Data discovery and  metadata access (using ObsCoreDM) are defined here. The capabilities for drilling down  to data files (and related resources) and services for remote access are defined elsewhere, but SIA also allows for direct access to retrieval. 
+The Simple Image Access protocol (SIA) provides capabilities for the discovery, description, access, and retrieval of multi-dimensional image datasets, including 2-D images as well as datacubes of three or more dimensions.  SIA data discovery is based on the ObsCore Data Model (ObsCoreDM, \citet{2017ivoa.spec.0509L}), which primarily describes data products by the physical axes (spatial, spectral, time, and polarization). Image datasets with dimension greater than 2 are often referred to as \textit{datacubes}, \textit{cube} or \textit{image cube} datasets and may be considered examples of \textit{hypercube} or \textit{n-cube} data.  In this document the term “image” refers to general multi-dimensional datasets and is synonymous with these other terms unless the image dimensionality is otherwise specified. \\
+SIA provides capabilities for image discovery and access. Data discovery and  metadata access (using ObsCoreDM) are defined here. The capabilities for drilling down  to data files (and related resources) and services for remote access are defined elsewhere, but SIA also allows for direct access to retrieval.
 \end{abstract}
 \section*{Acknowledgments}
 The authors would like to thank all the participants in DAL-WG discussions  for their ideas, critical reviews, and contributions to this document.
 
 \section{Introduction}
-The Simple Image Access (SIA) protocol defines several capabilities to support discovery and access to astronomical image datasets of any dimension.  Typical image datasets include 2-D spatial images, spectral data cubes, and cube and hypercube data of higher dimensions as well as derived image data products.  The underlying ObsCore data model is a simplified view on the typical image datasets derived from observational data, which have some combination of spatial, spectral (including velocity and redshift), time, and polarization axes.  
-For complete access to datacubes, the SIA-2.0 specification  makes use of features defined in DataLink \citep{std:DataLink}. It also makes use of AccessData services, as well as custom data services.
+The Simple Image Access (SIA) protocol defines several capabilities to support discovery and access to astronomical image datasets of any dimension.  Typical image datasets include 2-D spatial images, spectral data cubes, and cube and hypercube data of higher dimensions as well as derived image data products.  The underlying ObsCore data model is a simplified view on the typical image datasets derived from observational data, which have some combination of spatial, spectral (including velocity and redshift), time, and polarization axes.
+For complete access to datacubes, the SIA-2.0 specification  makes use of features defined in DataLink \citep{2023ivoa.spec.1215B}. It also makes use of AccessData services, as well as custom data services.
 
 
 
 \begin{figure}[H]
 \centering
 
-\includegraphics[width=0.9\textwidth]{archdiag.png}
+\includegraphics[width=0.9\textwidth]{role_diagram.pdf}
 \label{fig:architecture}
 \end{figure}
 
-SIA defines data discovery and metadata capabilities that work with other DAL services to enable image and data cube access. The basic interface for the capabilities defined in this specification are described in DALI \citep{std:DALI}. DataLink can be used with SIA for finding access URL(s) for files, related resources, and data services such as AccessData (in development). SIA services also support VOSI-availability and VOSI-capabilities \citep{std:VOSI}  resources.
+SIA defines data discovery and metadata capabilities that work with other DAL services to enable image and data cube access. The basic interface for the capabilities defined in this specification are described in DALI \citep{2017ivoa.spec.0517D}. DataLink can be used with SIA for finding access URL(s) for files, related resources, and data services such as AccessData (in development). SIA services also support VOSI-availability\todo{Please don't talk about availability; it ought to be phased out in its current form} and VOSI-capabilities \citep{2017ivoa.spec.0524G}  resources.
 
-The ObsCore data model has been defined in \cite{std:OBSCORE}, it contains and organizes the minimal set of metadata necessary to discover datasets of interest for a specific purpose. The metadata returned from the SIA data discovery request is defined by the ObsCore data model and serialized according to the ObsTAP specification \citep{std:OBSCORE}; this may be extended with additional metadata (columns)  in the future.  A future version of SIA may define a separate resource for accessing the complete  data model metadata for a single dataset once such a model is available. Data discovery responses are returned in VOTable \citep{std:VOTABLE} format unless an alternate format is requested.
+The ObsCore data model has been defined in \citet{2017ivoa.spec.0509L}, it contains and organizes the minimal set of metadata necessary to discover datasets of interest for a specific purpose. The metadata returned from the SIA data discovery request is defined by the ObsCore data model and serialized according to the ObsTAP specification \citep{2017ivoa.spec.0509L}; this may be extended with additional metadata (columns)  in the future.  A future version of SIA may define a separate resource for accessing the complete  data model metadata for a single dataset once such a model is available. Data discovery responses are returned in VOTable \citep{2019ivoa.spec.1021O} format unless an alternate format is requested.
 
 \subsection{The Role in the IVOA Architecture}
 
-SIA specifies standardID values for each capability, as defined by VODataService \citep{std:VODS11}. SIA services may be registered in an IVOA Registry using the SimpleDALRegExt \citep{std:DALREGEXT} extension schema.
+SIA specifies standardID values for each capability, as defined by VODataService \citep{2021ivoa.spec.1102D}. SIA services may be registered in an IVOA Registry using the SimpleDALRegExt \citep{2017ivoa.spec.0530P}\todo{Since that doesn't say anything about DAP, we shouldn't cite it here but come up with a registry extension ourselves (if neccessary)} extension schema.
+
 \subsection{Changes from SIA-1.0 to SIA-2.0}
 
-Virtual Observatory access to astronomical images has been available via the SIA-1.0 protocol for over a decade.  Many such services have been implemented since 2002, and SIA-1.0 \citep{std:SIAP} was formally standardized as an IVOA Recommendation in 2009.  The legacy SIA standard however pre-dates much of the VO technology developed since 2002, and is limited to two-dimensional images.  SIA-2.0 is multi-dimensional and fully integrated with the modern VO architecture and related standards.
+Virtual Observatory access to astronomical images has been available via the SIA-1.0 protocol for over a decade.  Many such services have been implemented since 2002, and SIA-1.0 \citep{2015ivoa.spec.1223D} was formally standardized as an IVOA Recommendation in 2009.  The legacy SIA standard however pre-dates much of the VO technology developed since 2002, and is limited to two-dimensional images.  SIA-2.0 is multi-dimensional and fully integrated with the modern VO architecture and related standards.
 SIA-2.0 differs from legacy SIA-1.0 in the following aspects:
 \begin{itemize}
-    \item The capabilities for dynamic access to image datasets are expanded in scope, but are separated from data discovery and download of whole image datasets.  A separate "AccessData" specification currently under development will define the more advanced dynamic data access functionality.  Automated virtual data generation and discovery (as in SIA-1.0) is not currently supported but is being considered for a future version of SIA.
-    \item Description of Image datasets is now provided by the more abstract ObsCore data model, providing more comprehensive high level dataset metadata, most of which is common to other classes of astronomical data. Most of the attributes of the model can be queried using standard parameters, where SIA-1.0 only standardized positional queries. 
+    \item The capabilities for dynamic access to image datasets are expanded in scope, but are separated from data discovery and download of whole image datasets.  A separate “AccessData”\todo{Please drop this and perhaps mention SODA instead.} specification currently under development will define the more advanced dynamic data access functionality.  Automated virtual data generation and discovery (as in SIA-1.0) is not currently supported but is being considered for a future version of SIA.
+    \item Description of Image datasets is now provided by the more abstract ObsCore data model, providing more comprehensive high level dataset metadata, most of which is common to other classes of astronomical data. Most of the attributes of the model can be queried using standard parameters, where SIA-1.0 only standardized positional queries.
     \item The version of VOTable   used  in the protocol (2.1) has been updated  and distinguishes between UCD and UType attributes. SIA-1.0 used a custom class of UCDs that pre-dated what are now UTypes, where ObsCore specifies standard UCD and UType values for use in the VOTable output.
     \item Most elements of the SIA-2.0 service interface are standardized across all DAL interfaces, as defined separately by the DALI  interface standard.
     \item SIAV2  supports the new DataLink  standard, providing additional capabilities for data access as well as the ability to link to related data products, as well as the VO Image data model standard currently under development, providing a full description of the structure of an image dataset.
@@ -69,18 +71,18 @@ While some of the more advanced capabilities for dynamic access to multi-dimensi
  These are the list of changes which  will be considered in a later version of this protocol  (SIA-2.1):
 \begin{itemize}
     \item The protocol should support  a detailed {metadata} capability. In the current design, this   capability will take a single parameter with an identifier (typically a publisher dataset identifier from a data discovery response) and return a document with detailed metadata about the dataset. The primary usage is to drill-down to the detailed  metadata after discovery
-    \item The standardID for the {metadata} capability will  probably be : ivo://ivoa.net/std/SIA\#metadata-2.1  
+    \item The standardID for the {metadata} capability will  probably be : ivo://ivoa.net/std/SIA\#metadata-2.1
     \item  The parameter language should be extended to support case-insensitivity, wildcards, and pattern recognition.
     \item The DALI UPLOAD facility will be defined in order to allow queries based on values stored in a file.
     \item The protocol will also support an option for virtual data discovery. With this option, controlled by usage of an optional parameter, the  query can force the discovery of virtual datasets with best  matching to the input parameter constraints
     \item COLLECTION and FACILITY currently provide query parameters provide selection on service defined set of strings. It would be good to define standardized lists of those at IVOA level for next version.
-    \item Visibility data and event lists are not considered as valid DPTYPES in this version due to complexity of data access functionalities for those dataset types.  
+    \item Visibility data and event lists are not considered as valid DPTYPES in this version due to complexity of data access functionalities for those dataset types.
 \end{itemize}
 
 \subsection{Motivating Use Cases}
 Below are some of the more common use cases that have motivated the development of the SIA specification. While this is not complete, it helps to understand the problem area covered by this specification.
 \subsubsection{Simple Data Discovery}
-Simple data discovery entails finding services that provide parameter based discovery of images and datacubes, querying the service(s) with a few well known kinds of queries that cover greater than 95\% of use, and getting back easily parsed summary metadata about each available data product. The service discovery would be performed with an IVOA Registry search using a new service type defined for SIA-2.0. 
+Simple data discovery entails finding services that provide parameter based discovery of images and datacubes, querying the service(s) with a few well known kinds of queries that cover greater than 95\% of use, and getting back easily parsed summary metadata about each available data product. The service discovery would be performed with an IVOA Registry search using a new service type defined for SIA-2.0.
 
 The query for data would need to allow for querying in position, energy, time, and polarization:
 \begin{itemize}
@@ -108,19 +110,19 @@ The client should be able to download complete datasets with information availab
 
 \subsubsection{Access a Datacube with Operations: Too Big to Download}
 \label{sec:async}
-In many cases, datacubes are too large to download and process locally, so the client must be able to perform remote operations. Data discovery could be performed using any discovery protocol (SIA, TAP with ObsCore, etc.).  The client must be able to easily figure out if a low level access service is available for a discovered dataset. This could be using a URL provided in the response or by calling an associated DataLink service. Access operations include basic filtering (cut out a subsection of the data), transformations, or other pixel-level operations or even analysis. With current  version of the AccessData specification, we will only cover extracting a simple subset of an image or datacube. 
+In many cases, datacubes are too large to download and process locally, so the client must be able to perform remote operations. Data discovery could be performed using any discovery protocol (SIA, TAP with ObsCore, etc.).  The client must be able to easily figure out if a low level access service is available for a discovered dataset. This could be using a URL provided in the response or by calling an associated DataLink service. Access operations include basic filtering (cut out a subsection of the data), transformations, or other pixel-level operations or even analysis. With current  version of the AccessData specification, we will only cover extracting a simple subset of an image or datacube.
 
 \subsection{Scope and Related Documents}
 \label{sec:examples}
 
-This document can  support use cases 1.4.1, 1.4.3, and 1.4.4; support for 1.4.2 has been deferred to a future version. Some of the support for these use cases is provided by the separate capabilities defined in the DataLink and AccessData specifications. Together, these three specifications, plus TAP \citep{std:TAP}, and  within the framework provided by ObsCore, and the future image and cube data model provide a set of capabilities required to support a broad range of use cases.
+This document can  support use cases 1.4.1, 1.4.3, and 1.4.4; support for 1.4.2 has been deferred to a future version. Some of the support for these use cases is provided by the separate capabilities defined in the DataLink and AccessData specifications. Together, these three specifications, plus TAP \citep{2019ivoa.spec.0927D}, and  within the framework provided by ObsCore, and the future image and cube data model provide a set of capabilities required to support a broad range of use cases.
 
 
 \begin{figure}[H]
 \centering
 
 \includegraphics[width=0.9\textwidth]{schema.png}
-\label{fig:architecture}
+\label{fig:schema}
 \end{figure}
 
 
@@ -152,7 +154,7 @@ An SIA service must have at least one \{query\} resource; it could have multiple
 
 \subsection{\{query\} resource}
 \label{sec:query}
-The \{query\} resource is a synchronous web service resource that conforms to the DALI-sync description. The implementer is free to name (set the path of) this resource however they like; the client will find the resource path using the VOSI-capabilities resource. 
+The \{query\} resource is a synchronous web service resource that conforms to the DALI-sync description. The implementer is free to name (set the path of) this resource however they like; the client will find the resource path using the VOSI-capabilities resource.
 
 As a DALI-sync resource, the parameters for a request may be submitted using an HTTP GET (query string) or POST action.
 
@@ -165,27 +167,27 @@ All query parameters are multi-valued which means multiple occurrences of the pa
 Query parameters for numeric fields accept a single floating point value or a range of values with optional lower and upper bounds. Such range values are encoded using the VOTable array serialisation (space separated). If  the lower or upper bound is not specified, the range is open-ended. In VOTable arrays this uses the special values -Inf or +Inf. For example, the interval [300,600] is:
 
 \begin{lstlisting}
-300 600 
+300 600
 \end{lstlisting}
 The open-ended interval [300,infinity) (all values greater than or equal to 300) is:
 
 \begin{lstlisting}
- 300 +Inf 
+ 300 +Inf
 \end{lstlisting}
 The open-ended interval (-infinity,600] (all values less than or equal to 600) is:
 
 \begin{lstlisting}
- -Inf 600 
+ -Inf 600
 \end{lstlisting}
- The open-ended interval (-infinity,infinity) (all values) is: 
+ The open-ended interval (-infinity,infinity) (all values) is:
 
 \begin{lstlisting}
- -Inf +Inf 
+ -Inf +Inf
 \end{lstlisting}
 If specified, the boundary value is always included in the interval.
 The units for numeric values are specified for each parameter and never included in the value.
- 
-Except where explicitly noted (see~\ref{sec:ID}), query parameters for text or string fields are always case-sensitive and indicate an exact match. 
+
+Except where explicitly noted (see~\ref{sec:ID}), query parameters for text or string fields are always case-sensitive and indicate an exact match.
 
 The sections describing query parameters make use of fixed reference systems and units to simplify client and service implementation. These choices are not suitable for all domains; the values are chosen to enable the {query} resource to be used to search for most standard observational astronomy data. If they are not suitable for a specific domain of interest (e.g. planetary science) then it is feasible to write a very short standard that re-uses the SIA {query} capability but redefines the hard-coded systems and units. This new standard would have a new standardID to distinguish services that implement it from those that implement the capability defined here.
 
@@ -196,7 +198,7 @@ The sections describing query parameters make use of fixed reference systems and
 \subsubsection{POS}
 \label{sec:POS}
 
-The POS parameter defines the positional region(s) to be searched for data. The value is made up of a shape keyword followed by coordinate values. A POS constraint is satisfied if the specified shape intersects the bounds (s\_region in the ObsCore data model) of the observation. 
+The POS parameter defines the positional region(s) to be searched for data. The value is made up of a shape keyword followed by coordinate values. A POS constraint is satisfied if the specified shape intersects the bounds (s\_region in the ObsCore data model) of the observation.
  The allowed shapes are:
 \begin{table}[H]
 \begin{tabular}{ll}
@@ -216,24 +218,24 @@ A circle at (12,34) with radius 0.5:
 \begin{lstlisting}
 POS=CIRCLE 12.0 34.0 0.5
 \end{lstlisting}
-A range of [12,14] in longitude and [34,36] in latitude: 
+A range of [12,14] in longitude and [34,36] in latitude:
 
 \begin{lstlisting}
-POS=RANGE 12.0 12.5 34.0 36.0 
+POS=RANGE 12.0 12.5 34.0 36.0
 \end{lstlisting}
-A polygon from (12,34) to (14,35) to (14,36) to (12,35) and (implicitly) back to (12,34): 
+A polygon from (12,34) to (14,35) to (14,36) to (12,35) and (implicitly) back to (12,34):
 
 \begin{lstlisting}
 POS=POLYGON 12.0 34.0 14.0 35.0 14. 36.0 12.0 35.0
 \end{lstlisting}
 
 The inside is always assumed to be the smaller of the region to the left and the region to the right so only polygons smaller than half the sphere can be specified. \\ \\
-A band around the equator: 
+A band around the equator:
 
 \begin{lstlisting}
-POS=RANGE 0 360.0 -2.0 2.0 
+POS=RANGE 0 360.0 -2.0 2.0
 \end{lstlisting}
-The north pole: 
+The north pole:
 
 \begin{lstlisting}
 POS=RANGE 0 360.0 89.0 90.0
@@ -278,7 +280,7 @@ BAND=550
 
 Searching using a scalar value should match any data that includes the specified value; searching using an interval will find any data with energy coverage that intersects the specified interval.
 
-Energy values used in the BAND parameter are always assumed to be  observed wavelength in meters. The ObsCore data model does not define a specific reference frame for values of em\_min and em\_max; values in the BAND parameter are assumed to be in the same (unspecified) frame as the content (e.g. no specific frame or transformation should be assumed). 
+Energy values used in the BAND parameter are always assumed to be  observed wavelength in meters. The ObsCore data model does not define a specific reference frame for values of em\_min and em\_max; values in the BAND parameter are assumed to be in the same (unspecified) frame as the content (e.g. no specific frame or transformation should be assumed).
 
 \subsubsection{TIME}
 \label{sec:TIME}
@@ -297,7 +299,7 @@ An instant in time:
 TIME=55678.123456
 \end{lstlisting}
 
-Values used in the TIME parameter are always interpreted as specified in DALI in the section on literal values: UTC time scale and UNKNOWN reference position \citep{std:STC}. Modified Julian Date values are always in days.
+Values used in the TIME parameter are always interpreted as specified in DALI in the section on literal values: UTC time scale and UNKNOWN reference position \citep{2007ivoa.spec.1030R}\todo{Please cite the refpos vocabulary here instead}. Modified Julian Date values are always in days.
 
 \subsubsection{POL}
 \label{sec:POL}
@@ -368,7 +370,7 @@ SPATRES=-Inf 0.2
 Find data with resolution larger than 1.0 arcsec:
 
 \begin{lstlisting}
-SPATRES=1.0 +Inf 
+SPATRES=1.0 +Inf
 \end{lstlisting}
 Find data with resolution between 0.1 and 0.2 arcsec:
 
@@ -488,13 +490,13 @@ The TARGET parameter is a string-valued parameter that specifies the name of the
 The value is compared with the target\_name from the ObsCore data model.
 
 \subsubsection{FORMAT}
-The FORMAT parameter specifies the format returned by the access link. The value is compared with the access\_format column from the ObsCore data model. 
-This column describes the format of the response from the access\_url (see 3.1.3) so the values could be data file types (e.g. application/fits) or they 
-could be the DataLink MIME type (\cite{std:DataLink}, \cite{std:TSV}).
+The FORMAT parameter specifies the format returned by the access link. The value is compared with the access\_format column from the ObsCore data model.
+This column describes the format of the response from the access\_url (see 3.1.3) so the values could be data file types (e.g. application/fits) or they
+could be the DataLink MIME type \citep{2023ivoa.spec.1215B}.
 
 \subsection{RELEASEDATE}
-The RELEASEDATE parameter specifies the range of release dates to be searched for data. 
-The limits are compared to the obs\_release\_date optional attribute of the ObsCore data model. 
+The RELEASEDATE parameter specifies the range of release dates to be searched for data.
+The limits are compared to the obs\_release\_date optional attribute of the ObsCore data model.
 They are expressed as 2 ISO 8601 dates in the general case. A single value is searched for an exact match.
 As the obs\_release\_date attribute is optional, the service self description (\ref{sec:selfdesc})  informs the user of the availability of this parameter.
 RELEASEDATE queries for services not providing the release\_date attribute SHOULD provide an empty response.
@@ -507,16 +509,16 @@ The MAXREC parameter is defined in DALI and allows the client to limit the numbe
 
 \subsubsection{Service PARAMETER self description}
 \label{sec:selfdesc}
-Any service SHOULD  include a DataLink service descriptor in the VOTable output to describe itself. 
-This descriptor would describe the supported query parameters (standard and custom), including list 
+Any service SHOULD  include a DataLink service descriptor in the VOTable output to describe itself.
+This descriptor would describe the supported query parameters (standard and custom), including list
 of values for those with a fixed list (COLLECTION, INSTRUMENT, FACILITY, DPTYPE, CALIB, and FORMAT).
 This is particularly important for those parameters where the fixed list is not standardized by any
 specification such as COLLECTION, INSTRUMENT and FACILITY.
 
 \subsection{Availability: VOSI-availability}
-A web service with SIA capabilities must have a VOSI-availability resource \citep{std:VOSI}  as described in DALI .
+A web service with SIA capabilities must have a VOSI-availability resource \citep{2017ivoa.spec.0524G}  as described in DALI .
 \subsection{Capabilities: VOSI-capabilities}
-A web service with SIA capabilities must have a VOSI-capabilities resource \citep{std:VOSI} as described in DALI . The standardID for the \{query\} capability is 
+A web service with SIA capabilities must have a VOSI-capabilities resource \citep{2017ivoa.spec.0524G} as described in DALI . The standardID for the \{query\} capability is
 
 \begin{lstlisting}
 ivo://ivoa.net/std/SIA#query-2.0
@@ -528,9 +530,9 @@ All DAL services must implement the /capabilities resource. The following capabi
 
 
 <?xml version="1.0" encoding="UTF-8"?>
-<vosi:capabilities 
-   xmlns:vosi="http://www.ivoa.net/xml/VOSICapabilities/v1.0" 
-   xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" 
+<vosi:capabilities
+   xmlns:vosi="http://www.ivoa.net/xml/VOSICapabilities/v1.0"
+   xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
    xmlns:vs="http://www.ivoa.net/xml/VODataService/v1.1">
   <capability standardID="ivo://ivoa.net/std/VOSI#capabilities">
     <interface xsi:type="vs:ParamHTTP" version="1.0">
@@ -565,9 +567,9 @@ Note that the {query} resource does not have to be named as shown in the accessU
 \subsection{Successful Query}
 \label{sec:succesful}
 
-The response from a successful call to the \{query\} resource is a table consistent with  ObsTAP responses as described in \cite{std:OBSCORE}. The ObsCore data model specifies all the (VOTable) field names, utypes, UCDs, and units to use in the response, as well as which fields must have values and which are allowed to be empty (null). The \{query\} response must contain the required ObsCore fields and may contain additional fields (from ObsCore or custom fields from the service provider). Examples are provided below (section~\ref{sec:Examples}).
+The response from a successful call to the \{query\} resource is a table consistent with  ObsTAP responses as described in \citet{2017ivoa.spec.0509L}. The ObsCore data model specifies all the (VOTable) field names, utypes, UCDs, and units to use in the response, as well as which fields must have values and which are allowed to be empty (null). The \{query\} response must contain the required ObsCore fields and may contain additional fields (from ObsCore or custom fields from the service provider). Examples are provided below (section~\ref{sec:Examples}).
 
-Successfully executed requests should result in a response with HTTP status code 200 (OK) and a response in the format requested by the client or in the default format for the service. The default output format is VOTable. Other output formats can be specified by the RESPONSEFORMAT parameter (see \cite{std:DALI}).
+Successfully executed requests should result in a response with HTTP status code 200 (OK) and a response in the format requested by the client or in the default format for the service. The default output format is VOTable. Other output formats can be specified by the RESPONSEFORMAT parameter (see \citet{2017ivoa.spec.0517D}).
 
 The service should set the following HTTP headers to the correct values where possible.
 \begin{table}[H]
@@ -589,17 +591,17 @@ The service should set the following HTTP headers to the correct values where po
 Since the \{query\} response is usually dynamically generated, the Content-Length and Last-Modified headers cannot usually be set.
 
 \subsubsection{Related Service Metadata}
-The DataLink specification  gives a recipe for including additional resources in VOTable that enable the client to invoke services using values from the table as parameter values. 
+The DataLink specification  gives a recipe for including additional resources in VOTable that enable the client to invoke services using values from the table as parameter values.
 
 If the provider implements a DataLink service for the data being found via SIA, the \{query\} response should include a description for invoking the DataLink service, usually using values from the obs\_publisher\_did column.
- 
+
 If the provider implements an AccessData capability for the data being found via SIA and this capability can be invoked directly using an identifier in the \{query\} response, the \{query\} response should include a description for invoking this capability, usually using values from the obs\_publisher\_did column.
 
 
 
 \subsubsection{SIA {query} Service Descriptor}
 
-The DataLink specification describes a mechanism for describing a service within a VOTable resource and recommends that services can describe themselves with a special resource with name="this". SIA \{query\} responses should include a descriptor describing both standard and custom query parameters (if applicable). The descriptor for a service with standard parameters (see~\ref{sec:query}) would be:
+The DataLink specification describes a mechanism for describing a service within a VOTable resource and recommends that services can describe themselves with a special resource with \verb|name="this"|. SIA \{query\} responses should include a descriptor describing both standard and custom query parameters (if applicable). The descriptor for a service with standard parameters (see~\ref{sec:query}) would be:
 \begin{lstlisting}[language=XML]
 <RESOURCE type="meta" utype="adhoc:service" name="this">
  <PARAM name="standardID" datatype="char" arraysize="*"
@@ -610,16 +612,16 @@ The DataLink specification describes a mechanism for describing a service within
   <PARAM name="POS" datatype="char" arraysize="*" xtype="circle" />
   <PARAM name="POS" datatype="char" arraysize="*" xtype="range" />
   <PARAM name="POS" datatype="char" arraysize="*" xtype="polygon" />
-  <PARAM name="BAND" datatype="double" arraysize="*" 
+  <PARAM name="BAND" datatype="double" arraysize="*"
          xtype="interval" unit="m" />
-  <PARAM name="TIME" datatype="double" arraysize="*" 
+  <PARAM name="TIME" datatype="double" arraysize="*"
          xtype="interval" unit="d" />
   <PARAM name="POL" datatype="char" arraysize="*" />
-  <PARAM name="FOV" datatype="double" arraysize="*" 
+  <PARAM name="FOV" datatype="double" arraysize="*"
          xtype="interval" unit="deg" />
-  <PARAM name="SPATRES" datatype="double" arraysize="*" 
+  <PARAM name="SPATRES" datatype="double" arraysize="*"
          xtype="interval" unit="arcsec" />
-  <PARAM name="EXPTIME" datatype="double" arraysize="*" 
+  <PARAM name="EXPTIME" datatype="double" arraysize="*"
          xtype="interval" unit="sec" />
   <PARAM name="ID" datatype="char" arraysize="*" />
   <PARAM name="COLLECTION" datatype="char" arraysize="*" />
@@ -628,9 +630,9 @@ The DataLink specification describes a mechanism for describing a service within
   <PARAM name="DPTYPE" datatype="char" arraysize="*" />
   <PARAM name="CALIB" datatype="int" />
   <PARAM name="TARGET" datatype="char" arraysize="*" />
-  <PARAM name="TIMERES" datatype="double" arraysize="*" 
+  <PARAM name="TIMERES" datatype="double" arraysize="*"
          xtype="interval" unit="sec" />
-  <PARAM name="SPECRP" datatype="double" arraysize="*" 
+  <PARAM name="SPECRP" datatype="double" arraysize="*"
          xtype="interval" />
   <PARAM name="FORMAT" datatype="char" arraysize="*" />
 
@@ -644,7 +646,7 @@ This VOTable resource should be included in the output from all queries; it is e
 
 
 \subsubsection{Use of access\_url and access\_format}
-If the SIA service is only dealing with simple data (one file per result), the access\_url column may be a link directly to that file, in which case the access\_format column should specify the file format (e.g. application/fits). 
+If the SIA service is only dealing with simple data (one file per result), the access\_url column may be a link directly to that file, in which case the access\_format column should specify the file format (e.g. application/fits).
 
 If the data provider implements a DataLink service for the data being found via the SIA {query} capability, they may put a URL to invoke the DataLink {links} capability (with ID parameter and value) in the access\_url column; if they do this, they must also put the standard DataLink MIME type in the access\_format column.
 
@@ -686,530 +688,530 @@ UsageFault: invalid BAND value -2
 \label{sec:Examples}
 This section presents two examples of queries and responses corresponding to the following scenarios : \\
    How do I query a SIAV2 service containing  IRAS-IRIS images in a circle of 0.1 deg around position 2.8425 +74.4846 selecting 200 and 60 micron bands ? \\
-Note: Spaces in parameter values must be URL-encoded as \%2B or +; we leave this out of the example to make it easier to read.\\
+Note: Spaces in parameter values must be URL-encoded as \%2B or +; we leave this out of the example to make it easier to read\todo{Let's not talk about URL quoting here; it's complicated (e.g., no + in POST payloads}.\\
 {\footnotesize http://dalservices.ivoa.net/sia2/query?POS=CIRCLE 2.8425 74.4846 0.1 \\ \&BAND=0.0002\&BAND=0.00006\&COLLECTION=IRAS-IRIS}
 
 
 \begin{lstlisting}[basicstyle=\scriptsize,language=XML]
-<?xml version="1.0" encoding="UTF-8" ?> 
-<VOTABLE version="1.2" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" 
-         xsi:noNamespaceSchemaLocation="xmlns:http://www.ivoa.net/xml/VOTable-1.2.xsd" >  
-   <RESOURCE type="results"> 
-   <INFO name="QUERY_STATUS" value="OK"/> 
-   <TABLE> 
-    <FIELD name="dataproduct_type" ucd="meta.id" datatype="char" 
-           utype="obscore:ObsDataSet.dataProductType" arraysize="*"> 
+<?xml version="1.0" encoding="UTF-8" ?>
+<VOTABLE version="1.2" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+         xsi:noNamespaceSchemaLocation="xmlns:http://www.ivoa.net/xml/VOTable-1.2.xsd" >
+   <RESOURCE type="results">
+   <INFO name="QUERY_STATUS" value="OK"/>
+   <TABLE>
+    <FIELD name="dataproduct_type" ucd="meta.id" datatype="char"
+           utype="obscore:ObsDataSet.dataProductType" arraysize="*">
         <DESCRIPTION>Data product type</DESCRIPTION>
-    </FIELD> 
-    <FIELD name="calib_level" ucd="meta.code;obs.calib" datatype="int" utype="obscore:ObsDataSet.calibLevel"> 
+    </FIELD>
+    <FIELD name="calib_level" ucd="meta.code;obs.calib" datatype="int" utype="obscore:ObsDataSet.calibLevel">
        <DESCRIPTION>Calibration level</DESCRIPTION>
-    </FIELD> 
-    <FIELD name="obs_collection" datatype="char" ucd="meta.id" utype="obscore:DataID.Collection" 
-           arraysize="*">            
-        <DESCRIPTION>Data collection to which dataset belongs</DESCRIPTION>  
-    </FIELD> 
-    <FIELD name="obs_id" ucd="meta.id" datatype="char" utype="obscore:DataID.observationID" 
-           arraysize="*"> 
-          <DESCRIPTION>Free syntax Observation Identifier</DESCRIPTION>
-    </FIELD> 
-    <FIELD name="obs_publisher_did" ucd="meta.ref.url;meta.curation" datatype="char"
-           utype="obscore:Curation.PublisherDID" arraysize="*"> 
-       <DESCRIPTION>Publisher s ID for the dataset ID</DESCRIPTION> 
-    </FIELD> 
-    <FIELD name="access_url" ucd="meta.ref.url"  datatype="char" utype="obscore:Access.Reference" 
+    </FIELD>
+    <FIELD name="obs_collection" datatype="char" ucd="meta.id" utype="obscore:DataID.Collection"
            arraysize="*">
-       <DESCRIPTION>URL used to access dataset</DESCRIPTION> 
-    </FIELD> 
-    <FIELD name="access_format" datatype="char" ucd="meta.code.mime" utype="obscore:Access.Format" 
-           arraysize="*"> 
-       <DESCRIPTION>Content or MIME type of dataset</DESCRIPTION>          
-    </FIELD> 
-    <FIELD name="access_estsize" datatype="int" ucd="phys.size;meta.file" utype="obscore:Access.Size"> 
+        <DESCRIPTION>Data collection to which dataset belongs</DESCRIPTION>
+    </FIELD>
+    <FIELD name="obs_id" ucd="meta.id" datatype="char" utype="obscore:DataID.observationID"
+           arraysize="*">
+          <DESCRIPTION>Free syntax Observation Identifier</DESCRIPTION>
+    </FIELD>
+    <FIELD name="obs_publisher_did" ucd="meta.ref.url;meta.curation" datatype="char"
+           utype="obscore:Curation.PublisherDID" arraysize="*">
+       <DESCRIPTION>Publisher s ID for the dataset ID</DESCRIPTION>
+    </FIELD>
+    <FIELD name="access_url" ucd="meta.ref.url"  datatype="char" utype="obscore:Access.Reference"
+           arraysize="*">
+       <DESCRIPTION>URL used to access dataset</DESCRIPTION>
+    </FIELD>
+    <FIELD name="access_format" datatype="char" ucd="meta.code.mime" utype="obscore:Access.Format"
+           arraysize="*">
+       <DESCRIPTION>Content or MIME type of dataset</DESCRIPTION>
+    </FIELD>
+    <FIELD name="access_estsize" datatype="int" ucd="phys.size;meta.file" utype="obscore:Access.Size">
             <DESCRIPTION>Dataset estimated size</DESCRIPTION>
-    </FIELD> 
-    <FIELD name="target_name" datatype="char" ucd="meta.id;src" utype="obscore:Target.Name" arraysize="*"> 
+    </FIELD>
+    <FIELD name="target_name" datatype="char" ucd="meta.id;src" utype="obscore:Target.Name" arraysize="*">
            <DESCRIPTION>Target name</DESCRIPTION>
-    </FIELD> 
-    <FIELD name="s_ra" datatype="double" ucd="pos.eq.ra" 
-           utype="obscore:Char.SpatialAxis.Coverage.Location.Coord.Position2D.Value2.C1" unit="deg" > 
-          <DESCRIPTION>Spatial Position RA</DESCRIPTION>          
-    </FIELD> 
+    </FIELD>
+    <FIELD name="s_ra" datatype="double" ucd="pos.eq.ra"
+           utype="obscore:Char.SpatialAxis.Coverage.Location.Coord.Position2D.Value2.C1" unit="deg" >
+          <DESCRIPTION>Spatial Position RA</DESCRIPTION>
+    </FIELD>
     <FIELD name="s_dec" datatype="double" ucd="pos.eq.dec"
-           utype="obscore:Char.SpatialAxis.Coverage.Location.Coord.Position2D.Value2.C2" unit="deg" > 
-        <DESCRIPTION>Spatial Position Dec</DESCRIPTION> 
-    </FIELD> 
+           utype="obscore:Char.SpatialAxis.Coverage.Location.Coord.Position2D.Value2.C2" unit="deg" >
+        <DESCRIPTION>Spatial Position Dec</DESCRIPTION>
+    </FIELD>
     <FIELD name="s_fov" datatype="char" ucd="phys.angSize;instr.fov"
-           utype="obscore:SpatialAxis.Coverage.Bounds.Extent.diameter" unit="deg" > 
+           utype="obscore:SpatialAxis.Coverage.Bounds.Extent.diameter" unit="deg" >
           <DESCRIPTION>Spatial Field of view "diameter"</DESCRIPTION>
-    </FIELD> 
+    </FIELD>
     <FIELD name="s_region" datatype="char" ucd="phys.angArea;obs"
-           utype="obscore:Char.SpatialAxis.Coverage.Support.Area" arraysize="*" unit="deg" > 
-          <DESCRIPTION>Spatial support</DESCRIPTION>       
-    </FIELD> 
+           utype="obscore:Char.SpatialAxis.Coverage.Support.Area" arraysize="*" unit="deg" >
+          <DESCRIPTION>Spatial support</DESCRIPTION>
+    </FIELD>
     <FIELD name="s_resolution" datatype="double" ucd="pos.angResolution"
-           utype="obscore:Char.SpatialAxis.Resolution.refval.value" > 
-          <DESCRIPTION>Spatial resolution FWHM</DESCRIPTION>  
-    </FIELD> 
+           utype="obscore:Char.SpatialAxis.Resolution.refval.value" >
+          <DESCRIPTION>Spatial resolution FWHM</DESCRIPTION>
+    </FIELD>
     <FIELD name="t_min" datatype="double" ucd="time.start;obs.exposure"
-           utype="obscore:Char.TimeAxis.Coverage.Bounds.Limits.StartTime" unit="s" > 
+           utype="obscore:Char.TimeAxis.Coverage.Bounds.Limits.StartTime" unit="s" >
             <DESCRIPTION>Time coordinate Lower limit</DESCRIPTION>
-    </FIELD> 
+    </FIELD>
     <FIELD name="t_max" datatype="double" ucd="time.end;obs.exposure"
-           utype="obscore:Char.TimeAxis.Coverage.Bounds.Limits.StopTime" unit="s"> 
+           utype="obscore:Char.TimeAxis.Coverage.Bounds.Limits.StopTime" unit="s">
             <DESCRIPTION>Time coordinate Higher limit</DESCRIPTION>
-    </FIELD> 
+    </FIELD>
     <FIELD name="t_exptime" ucd="time.duration;obs.exposure" datatype="double"
-           utype="obscore:Char.TimeAxis.Coverage.Support.Extent" unit="s" > 
+           utype="obscore:Char.TimeAxis.Coverage.Support.Extent" unit="s" >
              <DESCRIPTION>Exposure time</DESCRIPTION>
-    </FIELD> 
+    </FIELD>
     <FIELD name="t_resolution" datatype="double" ucd="time.resolution"
-           utype="obscore:Char.TimeAxis.Resolution.refval.value" unit="s" > 
+           utype="obscore:Char.TimeAxis.Resolution.refval.value" unit="s" >
              <DESCRIPTION>Time resolution</DESCRIPTION>
-    </FIELD> 
+    </FIELD>
     <FIELD name="em_min" datatype="double" ucd="em.wl;stat.min"
-            utype="obscore:Char.SpectralAxis.Coverage.Bounds.Limits.LoLimit" unit="m" > 
+            utype="obscore:Char.SpectralAxis.Coverage.Bounds.Limits.LoLimit" unit="m" >
              <DESCRIPTION>Spectral coordinate Lower limit</DESCRIPTION>
-    </FIELD> 
+    </FIELD>
     <FIELD name="em_max" datatype="double" ucd="em.wl;stat.max"
-           utype="obscore:Char.SpectralAxis.Coverage.Bounds.Limits.HiLimit"  unit="m"> 
+           utype="obscore:Char.SpectralAxis.Coverage.Bounds.Limits.HiLimit"  unit="m">
             <DESCRIPTION>Spectral coordinate Higher limit</DESCRIPTION>
-    </FIELD> 
+    </FIELD>
     <FIELD name="em_res_power" datatype="double" ucd="spect.resolution"
-           utype="obscore:Char.SpectralAxis.Coverage.Resolution.ResolPower.refval" > 
+           utype="obscore:Char.SpectralAxis.Coverage.Resolution.ResolPower.refval" >
           <DESCRIPTION>SPECTRAL Resolving power</DESCRIPTION>
-    </FIELD> 
-    <FIELD name="o_ucd" datatype="char" ucd="meta.ucd" utype="obscore:Char.ObservableAxis.ucd" 
-           arraysize="*"> 
+    </FIELD>
+    <FIELD name="o_ucd" datatype="char" ucd="meta.ucd" utype="obscore:Char.ObservableAxis.ucd"
+           arraysize="*">
             <DESCRIPTION>UCD specifying the quantity on Observable axis</DESCRIPTION>
-    </FIELD> 
+    </FIELD>
     <FIELD name="pol_states" datatype="char" ucd="meta.code;phys.polarization"
-           utype="obscore:Char.PolarizationAxis.stateList" arraysize="*" > 
+           utype="obscore:Char.PolarizationAxis.stateList" arraysize="*" >
            <DESCRIPTION>Enumeration of Polarization sates</DESCRIPTION>
-    </FIELD> 
-    <FIELD name="facilty_name" datatype="char" ucd="meta.id;instr.tel" 
-           utype="obscore:Provenance.ObsConfig.facility.name" arraysize="*"> 
+    </FIELD>
+    <FIELD name="facilty_name" datatype="char" ucd="meta.id;instr.tel"
+           utype="obscore:Provenance.ObsConfig.facility.name" arraysize="*">
           <DESCRIPTION>Facility name</DESCRIPTION>
-    </FIELD> 
+    </FIELD>
     <FIELD name="instrument_name" ucd="meta.id;instr" datatype="char" arraysize="*"
-           utype="obscore:Provenance.ObsConfig.instrument.name"> 
-          <DESCRIPTION>Instrument name</DESCRIPTION>  
-    </FIELD> 
-    <DATA> 
-         <TABLEDATA> 
-                <TR> 
-                  <TD>cube</TD> 
-                  <TD>1</TD> 
-                  <TD>IRAS-IRIS</TD> 
-                  <TD>I422B2H0</TD> 
-                  <TD>ivo://cds.u-strasbg.fr/IRAS-IRIS/25MU/I422B2H0</TD> 
+           utype="obscore:Provenance.ObsConfig.instrument.name">
+          <DESCRIPTION>Instrument name</DESCRIPTION>
+    </FIELD>
+    <DATA>
+         <TABLEDATA>
+                <TR>
+                  <TD>cube</TD>
+                  <TD>1</TD>
+                  <TD>IRAS-IRIS</TD>
+                  <TD>I422B2H0</TD>
+                  <TD>ivo://cds.u-strasbg.fr/IRAS-IRIS/25MU/I422B2H0</TD>
                   <TD><![CDATA[http://aladix.u-strasbg.fr/cgi-bin/nph-Aladin++dev.cgi?
                          out=image&position=0.000000+80.000000&field=I422B2H0
-                         &survey=IRAS-IRIS\&color=25MU&mode=view]]></TD> 
-                  <TD>image/fits</TD> 
-                  <TD>1600</TD> 
-                  <TD>I422B2H0</TD> 
-                  <TD>0.000000 </TD> 
-                  <TD>80.000000 </TD> 
-                  <TD>0.5</TD> 
-                  <TD>POLYGON 30.0 200.0 32.0 200.0 32.0 198.0 30.0 198.0</TD> 
-                  <TD></TD> 
-                  <TD></TD> 
-                  <TD></TD> 
-                  <TD>1000</TD> 
-                  <TD>1.0</TD> 
-                  <TD>0.21</TD> 
-                  <TD>0.21</TD> 
-                  <TD>5.0</TD> 
-                  <TD></TD> 
-                  <TD>Stokes</TD> 
-                  <TD>IRAS-IRIS</TD> 
-                  <TD></TD> 
-                </TR> 
-                <TR> 
-                  <TD>cube</TD> 
-                  <TD>1</TD> 
-                  <TD>IRAS-IRIS</TD> 
-                  <TD>I408B1H0</TD> 
-                  <TD>ivo://cds.u-strasbg.fr/IRAS-IRIS/12MU/I408B1H0</TD> 
+                         &survey=IRAS-IRIS\&color=25MU&mode=view]]></TD>
+                  <TD>image/fits</TD>
+                  <TD>1600</TD>
+                  <TD>I422B2H0</TD>
+                  <TD>0.000000 </TD>
+                  <TD>80.000000 </TD>
+                  <TD>0.5</TD>
+                  <TD>POLYGON 30.0 200.0 32.0 200.0 32.0 198.0 30.0 198.0</TD>
+                  <TD></TD>
+                  <TD></TD>
+                  <TD></TD>
+                  <TD>1000</TD>
+                  <TD>1.0</TD>
+                  <TD>0.21</TD>
+                  <TD>0.21</TD>
+                  <TD>5.0</TD>
+                  <TD></TD>
+                  <TD>Stokes</TD>
+                  <TD>IRAS-IRIS</TD>
+                  <TD></TD>
+                </TR>
+                <TR>
+                  <TD>cube</TD>
+                  <TD>1</TD>
+                  <TD>IRAS-IRIS</TD>
+                  <TD>I408B1H0</TD>
+                  <TD>ivo://cds.u-strasbg.fr/IRAS-IRIS/12MU/I408B1H0</TD>
                   <TD><![CDATA[http://aladix.u-strasbg.fr/cgi-bin/nph-Aladin++dev.cgi?
                          out=image&position=0.000000+70.000000&field=I408B1H0
-                         &survey=IRAS-IRIS&color=12MU&mode=view]]></TD> 
-                  <TD>image/fits</TD> 
-                  <TD>1600</TD> 
-                  <TD>I408B1H0</TD> 
-                  <TD>0.000000 </TD> 
-                  <TD>70.000000 </TD> 
-                  <TD>0.5</TD> 
-                  <TD>POLYGON ICRS 30.0 200.0 32.0 200.0 32.0 198.0 30.0 198.0</TD> 
-                  <TD></TD> 
-                  <TD></TD> 
-                  <TD></TD> 
-                  <TD>1000</TD> 
-                  <TD>1.0</TD> 
-                  <TD>0.21</TD> 
-                  <TD>0.21</TD> 
-                  <TD>5.0</TD> 
-                  <TD></TD> 
-                  <TD>Stokes</TD> 
-                  <TD>IRAS-IRIS</TD> 
-                  <TD></TD> 
-                </TR> 
-                <TR> 
-                  <TD>cube</TD> 
-                  <TD>1</TD> 
-                  <TD>IRAS-IRIS</TD> 
-                  <TD>I422B1H0</TD> 
-                  <TD>ivo://cds.u-strasbg.fr/IRAS-IRIS/12MU/I422B1H0</TD> 
+                         &survey=IRAS-IRIS&color=12MU&mode=view]]></TD>
+                  <TD>image/fits</TD>
+                  <TD>1600</TD>
+                  <TD>I408B1H0</TD>
+                  <TD>0.000000 </TD>
+                  <TD>70.000000 </TD>
+                  <TD>0.5</TD>
+                  <TD>POLYGON ICRS 30.0 200.0 32.0 200.0 32.0 198.0 30.0 198.0</TD>
+                  <TD></TD>
+                  <TD></TD>
+                  <TD></TD>
+                  <TD>1000</TD>
+                  <TD>1.0</TD>
+                  <TD>0.21</TD>
+                  <TD>0.21</TD>
+                  <TD>5.0</TD>
+                  <TD></TD>
+                  <TD>Stokes</TD>
+                  <TD>IRAS-IRIS</TD>
+                  <TD></TD>
+                </TR>
+                <TR>
+                  <TD>cube</TD>
+                  <TD>1</TD>
+                  <TD>IRAS-IRIS</TD>
+                  <TD>I422B1H0</TD>
+                  <TD>ivo://cds.u-strasbg.fr/IRAS-IRIS/12MU/I422B1H0</TD>
                   <TD><![CDATA[http://aladix.u-strasbg.fr/cgi-bin/nph-Aladin++dev.cgi?
                          out=image&position=0.000000+80.000000&field=I422B1H0
-                         &survey=IRAS-IRIS&color=12MU&mode=view]]></TD> 
-                  <TD>image/fits</TD> 
-                  <TD>1600</TD> 
-                  <TD>I422B1H0</TD> 
-                  <TD>0.000000 </TD> 
-                  <TD>80.000000 </TD> 
-                  <TD>0.5</TD> 
-                  <TD>POLYGON ICRS 30.0 200.0 32.0 200.0 32.0 198.0 30.0 198.0</TD> 
-                  <TD></TD> 
-                  <TD></TD> 
-                  <TD></TD> 
-                  <TD>1000</TD> 
-                  <TD>1.0</TD> 
-                  <TD>0.21</TD> 
-                  <TD>0.21</TD> 
-                  <TD>5.0</TD> 
-                  <TD></TD> 
-                  <TD>Stokes</TD> 
-                  <TD>IRAS-IRIS</TD> 
-                  <TD></TD> 
+                         &survey=IRAS-IRIS&color=12MU&mode=view]]></TD>
+                  <TD>image/fits</TD>
+                  <TD>1600</TD>
+                  <TD>I422B1H0</TD>
+                  <TD>0.000000 </TD>
+                  <TD>80.000000 </TD>
+                  <TD>0.5</TD>
+                  <TD>POLYGON ICRS 30.0 200.0 32.0 200.0 32.0 198.0 30.0 198.0</TD>
+                  <TD></TD>
+                  <TD></TD>
+                  <TD></TD>
+                  <TD>1000</TD>
+                  <TD>1.0</TD>
+                  <TD>0.21</TD>
+                  <TD>0.21</TD>
+                  <TD>5.0</TD>
+                  <TD></TD>
+                  <TD>Stokes</TD>
+                  <TD>IRAS-IRIS</TD>
+                  <TD></TD>
                 </TR>
-             </TABLEDATA> 
-         </DATA> 
-    </TABLE> 
-  </RESOURCE> 
+             </TABLEDATA>
+         </DATA>
+    </TABLE>
+  </RESOURCE>
 </VOTABLE>
 \end{lstlisting}
-         How do I query a service containing radio cubes from Alma operated by NRAO in a circle of 0.1 deg around position 180.47 -18.70 in the CO band in the range 800 microns to 900 microns and made in the time range between Mjd=55708 and 55710 ? \\
+         How do I query a service containing radio cubes from Alma operated by NRAO in a circle of 0.1 deg around position 180.47 -18.70 in the CO band in the range 800 microns to 900 microns and made in the time range between Mjd=55708 and 55710?\todo{Let's not include the full responses in the document: It's a bad waste of space.  Rather, make them separate files, validate them in a make test, and link to them using auxiliaryurl.  Don't forget to include their names in AUX\_FILES.} \\
 Note: Spaces in parameter values must be URL-encoded as \%2B or +; we leave this out of the example to make it easier to read.\\
-{\footnotesize http://dalservices.ivoa.net/sia\_b?REQUEST=query\&POS=CIRCLE 180.475 -18.70 0.01 \\ \&BAND= 0.0008 0.0009\&TIME= 55708 55710\&COLLECTION=ALMA} 
+{\footnotesize http://dalservices.ivoa.net/sia\_b?REQUEST=query\&POS=CIRCLE 180.475 -18.70 0.01 \\ \&BAND= 0.0008 0.0009\&TIME= 55708 55710\&COLLECTION=ALMA}
 \begin{lstlisting}[basicstyle=\scriptsize,language=XML]
-<?xml version="1.0" encoding="UTF-8" ?> 
+<?xml version="1.0" encoding="UTF-8" ?>
 
-   <VOTABLE version="1.2" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" 
-            xsi:noNamespaceSchemaLocation="xmlns:http://www.ivoa.net/xml/VOTable-1.2.xsd" > 
-      <DESCRIPTION>DALServer SIAP Version 2.0 (vao-fall2013)</DESCRIPTION> 
-      <PARAM name="SORTORDER" datatype="char" value="Creator " /> 
-      <RESOURCE type="results"> 
-      <INFO name="QUERY_STATUS" value="OK"/> 
-      <TABLE> 
-      <FIELD name="dataproduct_type" ucd="meta.id" datatype="char" utype="obscore:ObsDataSet.dataProductType" 
-             arraysize="*"> 
+   <VOTABLE version="1.2" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+            xsi:noNamespaceSchemaLocation="xmlns:http://www.ivoa.net/xml/VOTable-1.2.xsd" >
+      <DESCRIPTION>DALServer SIAP Version 2.0 (vao-fall2013)</DESCRIPTION>
+      <PARAM name="SORTORDER" datatype="char" value="Creator " />
+      <RESOURCE type="results">
+      <INFO name="QUERY_STATUS" value="OK"/>
+      <TABLE>
+      <FIELD name="dataproduct_type" ucd="meta.id" datatype="char" utype="obscore:ObsDataSet.dataProductType"
+             arraysize="*">
       <DESCRIPTION>Data product type</DESCRIPTION>
-    </FIELD> 
-    <FIELD name="calib_level" ucd="meta.code;obs.calib" datatype="int" utype="obscore:ObsDataSet.calibLevel"> 
+    </FIELD>
+    <FIELD name="calib_level" ucd="meta.code;obs.calib" datatype="int" utype="obscore:ObsDataSet.calibLevel">
        <DESCRIPTION>Calibration level</DESCRIPTION>
-    </FIELD> 
-    <FIELD name="obs_collection" datatype="char" ucd="meta.id" utype="obscore:DataID.Collection" arraysize="*">            
-        <DESCRIPTION>Data collection to which dataset belongs</DESCRIPTION>  
-    </FIELD> 
-    <FIELD name="obs_id" ucd="meta.id" datatype="char" utype="obscore:DataID.observationID" arraysize="*"> 
+    </FIELD>
+    <FIELD name="obs_collection" datatype="char" ucd="meta.id" utype="obscore:DataID.Collection" arraysize="*">
+        <DESCRIPTION>Data collection to which dataset belongs</DESCRIPTION>
+    </FIELD>
+    <FIELD name="obs_id" ucd="meta.id" datatype="char" utype="obscore:DataID.observationID" arraysize="*">
           <DESCRIPTION>Free syntax Observation Identifier</DESCRIPTION>
-    </FIELD> 
+    </FIELD>
     <FIELD name="obs_publisher_did" ucd="meta.ref.url;meta.curation" datatype="char"
-           utype="obscore:Curation.PublisherDID" arraysize="*"> 
-       <DESCRIPTION>Publisher s ID for the dataset ID</DESCRIPTION> 
-    </FIELD> 
+           utype="obscore:Curation.PublisherDID" arraysize="*">
+       <DESCRIPTION>Publisher s ID for the dataset ID</DESCRIPTION>
+    </FIELD>
     <FIELD name="access_url" ucd="meta.ref.url"  datatype="char" utype="obscore:Access.Reference" arraysize="*">
-       <DESCRIPTION>URL used to access dataset</DESCRIPTION> 
-    </FIELD> 
-    <FIELD name="access_format" datatype="char" ucd="meta.code.mime" utype="obscore:Access.Format" arraysize="*"> 
-       <DESCRIPTION>Content or MIME type of dataset</DESCRIPTION>          
-    </FIELD> 
-    <FIELD name="access_estsize" datatype="int" ucd="phys.size;meta.file" utype="obscore:Access.Size"> 
+       <DESCRIPTION>URL used to access dataset</DESCRIPTION>
+    </FIELD>
+    <FIELD name="access_format" datatype="char" ucd="meta.code.mime" utype="obscore:Access.Format" arraysize="*">
+       <DESCRIPTION>Content or MIME type of dataset</DESCRIPTION>
+    </FIELD>
+    <FIELD name="access_estsize" datatype="int" ucd="phys.size;meta.file" utype="obscore:Access.Size">
             <DESCRIPTION>Dataset estimated size</DESCRIPTION>
-    </FIELD> 
-    <FIELD name="target_name" datatype="char" ucd="meta.id;src" utype="obscore:Target.Name" arraysize="*"> 
+    </FIELD>
+    <FIELD name="target_name" datatype="char" ucd="meta.id;src" utype="obscore:Target.Name" arraysize="*">
            <DESCRIPTION>Target name</DESCRIPTION>
-    </FIELD> 
-    <FIELD name="s_ra" datatype="double" ucd="pos.eq.ra" 
-           utype="obscore:Char.SpatialAxis.Coverage.Location.Coord.Position2D.Value2.C1" unit="deg" > 
-          <DESCRIPTION>Spatial Position RA</DESCRIPTION>          
-    </FIELD> 
+    </FIELD>
+    <FIELD name="s_ra" datatype="double" ucd="pos.eq.ra"
+           utype="obscore:Char.SpatialAxis.Coverage.Location.Coord.Position2D.Value2.C1" unit="deg" >
+          <DESCRIPTION>Spatial Position RA</DESCRIPTION>
+    </FIELD>
     <FIELD name="s_dec" datatype="double" ucd="pos.eq.dec"
-           utype="obscore:Char.SpatialAxis.Coverage.Location.Coord.Position2D.Value2.C2" unit="deg" > 
-        <DESCRIPTION>Spatial Position Dec</DESCRIPTION> 
-    </FIELD> 
+           utype="obscore:Char.SpatialAxis.Coverage.Location.Coord.Position2D.Value2.C2" unit="deg" >
+        <DESCRIPTION>Spatial Position Dec</DESCRIPTION>
+    </FIELD>
     <FIELD name="s_fov" datatype="char" ucd="phys.angSize;instr.fov"
-           utype="obscore:SpatialAxis.Coverage.Bounds.Extent.diameter" unit="deg" > 
+           utype="obscore:SpatialAxis.Coverage.Bounds.Extent.diameter" unit="deg" >
           <DESCRIPTION>Spatial Field of view "diameter"</DESCRIPTION>
-    </FIELD> 
+    </FIELD>
     <FIELD name="s_region" datatype="char" ucd="phys.angArea;obs"
-           utype="obscore:Char.SpatialAxis.Coverage.Support.Area" arraysize="*" unit="deg" > 
-         <DESCRIPTION>Spatial support</DESCRIPTION>       
-    </FIELD> 
+           utype="obscore:Char.SpatialAxis.Coverage.Support.Area" arraysize="*" unit="deg" >
+         <DESCRIPTION>Spatial support</DESCRIPTION>
+    </FIELD>
     <FIELD name="s_resolution" datatype="double" ucd="pos.angResolution"
-           utype="obscore:Char.SpatialAxis.Resolution.refval.value" > 
-          <DESCRIPTION>Spatial resolution FWHM</DESCRIPTION>  
-    </FIELD> 
+           utype="obscore:Char.SpatialAxis.Resolution.refval.value" >
+          <DESCRIPTION>Spatial resolution FWHM</DESCRIPTION>
+    </FIELD>
     <FIELD name="t_min" datatype="double" ucd="time.start;obs.exposure"
-           utype="obscore:Char.TimeAxis.Coverage.Bounds.Limits.StartTime" unit="s" > 
+           utype="obscore:Char.TimeAxis.Coverage.Bounds.Limits.StartTime" unit="s" >
             <DESCRIPTION>Time coordinate Lower limit</DESCRIPTION>
-    </FIELD> 
+    </FIELD>
     <FIELD name="t_max" datatype="double" ucd="time.end;obs.exposure"
-           utype="obscore:Char.TimeAxis.Coverage.Bounds.Limits.StopTime" unit="s"> 
+           utype="obscore:Char.TimeAxis.Coverage.Bounds.Limits.StopTime" unit="s">
             <DESCRIPTION>Time coordinate Higher limit</DESCRIPTION>
-    </FIELD> 
+    </FIELD>
     <FIELD name="t_exptime" ucd="time.duration;obs.exposure" datatype="double"
-           utype="obscore:Char.TimeAxis.Coverage.Support.Extent" unit="s" > 
+           utype="obscore:Char.TimeAxis.Coverage.Support.Extent" unit="s" >
              <DESCRIPTION>Exposure time</DESCRIPTION>
-    </FIELD> 
+    </FIELD>
     <FIELD name="t_resolution" datatype="double" ucd="time.resolution"
-           utype="obscore:Char.TimeAxis.Resolution.refval.value" unit="s" > 
+           utype="obscore:Char.TimeAxis.Resolution.refval.value" unit="s" >
              <DESCRIPTION>Time resolution</DESCRIPTION>
-    </FIELD> 
+    </FIELD>
     <FIELD name="em_min" datatype="double" ucd="em.wl;stat.min"
-            utype="obscore:Char.SpectralAxis.Coverage.Bounds.Limits.LoLimit" unit="m" > 
+            utype="obscore:Char.SpectralAxis.Coverage.Bounds.Limits.LoLimit" unit="m" >
              <DESCRIPTION>Spectral coordinate Lower limit</DESCRIPTION>
-    </FIELD> 
+    </FIELD>
     <FIELD name="em_max" datatype="double" ucd="em.wl;stat.max"
-           utype="obscore:Char.SpectralAxis.Coverage.Bounds.Limits.HiLimit"  unit="m"> 
+           utype="obscore:Char.SpectralAxis.Coverage.Bounds.Limits.HiLimit"  unit="m">
             <DESCRIPTION>Spectral coordinate Higher limit</DESCRIPTION>
-    </FIELD> 
+    </FIELD>
     <FIELD name="em_res_power" datatype="double" ucd="spect.resolution"
-           utype="obscore:Char.SpectralAxis.Coverage.Resolution.ResolPower.refval" > 
+           utype="obscore:Char.SpectralAxis.Coverage.Resolution.ResolPower.refval" >
           <DESCRIPTION>SPECTRAL Resolving power</DESCRIPTION>
-    </FIELD> 
-    <FIELD name="o_ucd" datatype="char" ucd="meta.ucd" utype="obscore:Char.ObservableAxis.ucd" arraysize="*" > 
+    </FIELD>
+    <FIELD name="o_ucd" datatype="char" ucd="meta.ucd" utype="obscore:Char.ObservableAxis.ucd" arraysize="*" >
             <DESCRIPTION>UCD specifying the quantity on Observable axis</DESCRIPTION>
-    </FIELD> 
+    </FIELD>
     <FIELD name="pol_states" datatype="char" ucd="meta.code;phys.polarization"
-           utype="obscore:Char.PolarizationAxis.stateList" arraysize="*" > 
+           utype="obscore:Char.PolarizationAxis.stateList" arraysize="*" >
            <DESCRIPTION>Enumeration of Polarization sates</DESCRIPTION>
-    </FIELD> 
-    <FIELD name="facilty_name" datatype="char" ucd="meta.id;instr.tel" 
-           utype="obscore:Provenance.ObsConfig.facility.name" arraysize="*"> 
+    </FIELD>
+    <FIELD name="facilty_name" datatype="char" ucd="meta.id;instr.tel"
+           utype="obscore:Provenance.ObsConfig.facility.name" arraysize="*">
           <DESCRIPTION>Facility name</DESCRIPTION>
-    </FIELD> 
+    </FIELD>
     <FIELD name="instrument_name" ucd="meta.id;instr" datatype="char" arraysize="*"
-           utype="obscore:Provenance.ObsConfig.instrument.name"> 
-          <DESCRIPTION>Instrument name</DESCRIPTION>  
-    </FIELD> 
-      
-       <DATA> 
-         <TABLEDATA> 
-           <TR> 
-             <TD>image</TD> 
-             <TD>1</TD> 
-             <TD>ALMA_test</TD> 
-             <TD>ALMA test data: Antennae_South CO3_Line Full_velocity_map</TD> 
-             <TD>ivo://nrao/vo#siav2model:373</TD> 
+           utype="obscore:Provenance.ObsConfig.instrument.name">
+          <DESCRIPTION>Instrument name</DESCRIPTION>
+    </FIELD>
+
+       <DATA>
+         <TABLEDATA>
+           <TR>
+             <TD>image</TD>
+             <TD>1</TD>
+             <TD>ALMA_test</TD>
+             <TD>ALMA test data: Antennae_South CO3_Line Full_velocity_map</TD>
+             <TD>ivo://nrao/vo#siav2model:373</TD>
              <TD><![CDATA[http://vaosa-vm1.aoc.nrao.edu/ivoa-dal/siapv2-vao/sync?
-                    REQUEST=accessData&FORMAT=image/fits&PubDID=ivo%3A%2F%2Fnrao%2Fvo%23siav2model%3A373]]></TD> 
-             <TD>image/fits</TD> 
-             <TD>2250000</TD> 
-             <TD></TD> 
-             <TD>180.475103</TD> 
-             <TD>-18.8855694</TD> 
-             <TD>0.027</TD> 
-             <TD>POLYGON 180.4607706  -18.8991286 180.4607706 -18.8720092  
-                 180.4894354 -18.8720092 180.4894354 -18.8991286</TD> 
-             <TD>3.6e-5</TD> 
-             <TD>55709.129226</TD> 
-             <TD>55709.129226</TD> 
-             <TD/> 
-             <TD/> 
-             <TD>0.000871035586716119</TD> 
-             <TD>0.000873082347755277</TD> 
-             <TD>29753.745800131965</TD> 
-             <TD>phot.flux</TD> 
-             <TD>I</TD> 
-             <TD>ALMA</TD> 
-             <TD/> 
-           </TR> 
-           <TR>  
-             <TD>image</TD> 
-             <TD>1</TD> 
-             <TD>ALMA_test</TD> 
-             <TD>ALMA test data: Antennae_South CO3_2Line  Velocity_map_cutout</TD> 
-             <TD>ivo://nrao/vo#siav2model:373</TD> 
+                    REQUEST=accessData&FORMAT=image/fits&PubDID=ivo%3A%2F%2Fnrao%2Fvo%23siav2model%3A373]]></TD>
+             <TD>image/fits</TD>
+             <TD>2250000</TD>
+             <TD></TD>
+             <TD>180.475103</TD>
+             <TD>-18.8855694</TD>
+             <TD>0.027</TD>
+             <TD>POLYGON 180.4607706  -18.8991286 180.4607706 -18.8720092
+                 180.4894354 -18.8720092 180.4894354 -18.8991286</TD>
+             <TD>3.6e-5</TD>
+             <TD>55709.129226</TD>
+             <TD>55709.129226</TD>
+             <TD/>
+             <TD/>
+             <TD>0.000871035586716119</TD>
+             <TD>0.000873082347755277</TD>
+             <TD>29753.745800131965</TD>
+             <TD>phot.flux</TD>
+             <TD>I</TD>
+             <TD>ALMA</TD>
+             <TD/>
+           </TR>
+           <TR>
+             <TD>image</TD>
+             <TD>1</TD>
+             <TD>ALMA_test</TD>
+             <TD>ALMA test data: Antennae_South CO3_2Line  Velocity_map_cutout</TD>
+             <TD>ivo://nrao/vo#siav2model:373</TD>
              <TD><![CDATA[http://vaosa-vm1.aoc.nrao.edu/ivoa-dal/siapv2-vao/sync?
-                    REQUEST=accessData&FORMAT=image/fits&PubDID=ivo%3A%2F%2Fnrao%2Fvo%23image-ZSKuYR]]></TD> 
-             <TD>image/fits</TD> 
-             <TD>292456</TD> 
-             <TD></TD> 
-             <TD>180.474988373509</TD> 
-             <TD>-18.8799902066141</TD> 
-             <TD>0.0097</TD> 
+                    REQUEST=accessData&FORMAT=image/fits&PubDID=ivo%3A%2F%2Fnrao%2Fvo%23image-ZSKuYR]]></TD>
+             <TD>image/fits</TD>
+             <TD>292456</TD>
+             <TD></TD>
+             <TD>180.474988373509</TD>
+             <TD>-18.8799902066141</TD>
+             <TD>0.0097</TD>
              <TD>POLYGON ICRS 180.4607706 -18.8991286 180.4607706 -18.8720092
-                 180.4894354 -18.8720092 180.4894354 -18.8991286 </TD> 
-             <TD>3.6e-5</TD> 
-             <TD>55709.129226</TD> 
-             <TD>55709.129226</TD> 
-             <TD/> 
-             <TD/> 
-             <TD>0.000874109339630009</TD> 
-             <TD>0.000870797535056077</TD> 
-             <TD>29753.745800131965</TD> 
-             <TD>phot.flux</TD> 
-             <TD>I</TD> 
-             <TD>ALMA</TD> 
-             <TD/> 
-           </TR> 
-           <TR>  
-             <TD>image</TD> 
-             <TD>1</TD> 
-             <TD>ALMA_test</TD> 
-             <TD>ALMA test data: Antennae_South CO3_2Line Full_integrated_intensity</TD> 
-             <TD>ivo://nrao/vo#siav2model:374</TD> 
+                 180.4894354 -18.8720092 180.4894354 -18.8991286 </TD>
+             <TD>3.6e-5</TD>
+             <TD>55709.129226</TD>
+             <TD>55709.129226</TD>
+             <TD/>
+             <TD/>
+             <TD>0.000874109339630009</TD>
+             <TD>0.000870797535056077</TD>
+             <TD>29753.745800131965</TD>
+             <TD>phot.flux</TD>
+             <TD>I</TD>
+             <TD>ALMA</TD>
+             <TD/>
+           </TR>
+           <TR>
+             <TD>image</TD>
+             <TD>1</TD>
+             <TD>ALMA_test</TD>
+             <TD>ALMA test data: Antennae_South CO3_2Line Full_integrated_intensity</TD>
+             <TD>ivo://nrao/vo#siav2model:374</TD>
              <TD><![CDATA[http://vaosa-vm1.aoc.nrao.edu/ivoa-dal/siapv2-vao/sync?
-                    REQUEST=accessData&FORMAT=image/fits&PubDID=ivo%3A%2F%2Fnrao%2Fvo%23siav2model%3A374]]></TD> 
-             <TD>image/fits</TD> 
-             <TD>2250000</TD> 
-             <TD></TD> 
-             <TD>180.475103</TD> 
-             <TD>-18.8855694</TD> 
-             <TD>0.027</TD> 
+                    REQUEST=accessData&FORMAT=image/fits&PubDID=ivo%3A%2F%2Fnrao%2Fvo%23siav2model%3A374]]></TD>
+             <TD>image/fits</TD>
+             <TD>2250000</TD>
+             <TD></TD>
+             <TD>180.475103</TD>
+             <TD>-18.8855694</TD>
+             <TD>0.027</TD>
              <TD>POLYGON ICRS 180.4607706 -18.8991286 180.4607706 -18.8720092
-                 180.4894354 -18.8720092 180.4894354 -18.8991286 </TD> 
-             <TD>3.6e-5</TD> 
-             <TD>55709.129226</TD> 
-             <TD>55709.129226</TD> 
-             <TD/> 
-             <TD/> 
-             <TD>0.000874109339630009</TD> 
-             <TD>0.000871035586716119</TD> 
-             <TD>29753.745800131965</TD> 
-             <TD>phot.flux</TD> 
-             <TD>I</TD> 
-             <TD>ALMA</TD> 
-             <TD/> 
-           </TR> 
-           <TR> 
-             <TD>image</TD> 
-             <TD>1</TD> 
-             <TD>ALMA_test</TD> 
-             <TD>ALMA test data: Antennae_South CO3_2Line  Full_data_cube</TD>  
-             <TD>ivo://nrao/vo#siav2model:379</TD> 
-             <TD><![CDATA[http://vaosa-vm1.aoc.nrao.edu/ivoa-dal/siapv2-vao/sync?
-                    REQUEST=accessData&FORMAT=image/fits&PubDID=ivo%3A%2F%2Fnrao%2Fvo%23siav2model%3A379]]></TD> 
-             <TD>image/fits</TD> 
-             <TD>157500000</TD> 
-             <TD></TD> 
-             <TD>180.475103</TD> 
-             <TD>-18.8855694</TD> 
-             <TD>0.027</TD> 
-             <TD>POLYGON ICRS 180.4607706 -18.8991286 180.4607706 -18.8720092
-                 180.4894354 -18.8720092 180.4894354 -18.8991286 </TD> 
-             <TD>3.6e-5</TD> 
-             <TD>55709.129226</TD> 
-             <TD>55709.129226</TD> 
-             <TD></TD> 
-             <TD></TD> 
-             <TD>0.000874109339630009</TD> 
-             <TD>0.000871035586716119</TD> 
-             <TD>29753.745800131965</TD> 
-             <TD>phot.flux</TD> 
-             <TD>I</TD> 
-             <TD>ALMA</TD> 
-             <TD/> 
-           </TR> 
-           <TR> 
-             <TD>image</TD> 
-             <TD>1</TD> 
-             <TD>ALMA_test</TD> 
-             <TD>ALMA test data: Antennae_South CO3_2Line  Cube_cutout</TD>  
+                 180.4894354 -18.8720092 180.4894354 -18.8991286 </TD>
+             <TD>3.6e-5</TD>
+             <TD>55709.129226</TD>
+             <TD>55709.129226</TD>
+             <TD/>
+             <TD/>
+             <TD>0.000874109339630009</TD>
+             <TD>0.000871035586716119</TD>
+             <TD>29753.745800131965</TD>
+             <TD>phot.flux</TD>
+             <TD>I</TD>
+             <TD>ALMA</TD>
+             <TD/>
+           </TR>
+           <TR>
+             <TD>image</TD>
+             <TD>1</TD>
+             <TD>ALMA_test</TD>
+             <TD>ALMA test data: Antennae_South CO3_2Line  Full_data_cube</TD>
              <TD>ivo://nrao/vo#siav2model:379</TD>
              <TD><![CDATA[http://vaosa-vm1.aoc.nrao.edu/ivoa-dal/siapv2-vao/sync?
-                    REQUEST=accessData&FORMAT=image/fits&PubDID=ivo%3A%2F%2Fnrao%2Fvo%23image-m0RXVX]]></TD> 
-             <TD>image/fits</TD> 
-             <TD>20471920</TD> 
-             <TD></TD> 
-             <TD>180.474988373509</TD> 
-             <TD>-18.8799902066141</TD> 
-             <TD>0.0097</TD> 
-             <TD>POLYGON ICRS 180.4607706 -18.8991286 180.4607706 -18.8720092 
-                 180.4894354 -18.8720092 180.4894354 -18.8991286</TD> 
-             <TD>3.6e-5</TD> 
-             <TD>55709.129226</TD> 
-             <TD>55709.129226</TD> 
-             <TD></TD> 
-             <TD></TD> 
-             <TD>0.000874109339630009</TD> 
-             <TD>0.000872463699874965</TD> 
-             <TD>29753.745800131965</TD> 
-             <TD>phot.flux</TD> 
-             <TD>I</TD> 
-             <TD>ALMA</TD> 
-             <TD/> 
-           </TR> 
-           <TR>  
-             <TD>image</TD> 
-             <TD>1</TD> 
+                    REQUEST=accessData&FORMAT=image/fits&PubDID=ivo%3A%2F%2Fnrao%2Fvo%23siav2model%3A379]]></TD>
+             <TD>image/fits</TD>
+             <TD>157500000</TD>
+             <TD></TD>
+             <TD>180.475103</TD>
+             <TD>-18.8855694</TD>
+             <TD>0.027</TD>
+             <TD>POLYGON ICRS 180.4607706 -18.8991286 180.4607706 -18.8720092
+                 180.4894354 -18.8720092 180.4894354 -18.8991286 </TD>
+             <TD>3.6e-5</TD>
+             <TD>55709.129226</TD>
+             <TD>55709.129226</TD>
+             <TD></TD>
+             <TD></TD>
+             <TD>0.000874109339630009</TD>
+             <TD>0.000871035586716119</TD>
+             <TD>29753.745800131965</TD>
+             <TD>phot.flux</TD>
+             <TD>I</TD>
+             <TD>ALMA</TD>
+             <TD/>
+           </TR>
+           <TR>
+             <TD>image</TD>
+             <TD>1</TD>
              <TD>ALMA_test</TD>
-             <TD>ALMA test data: Antennae_South CO3_2Line  full_dispersion_map</TD> 
+             <TD>ALMA test data: Antennae_South CO3_2Line  Cube_cutout</TD>
+             <TD>ivo://nrao/vo#siav2model:379</TD>
+             <TD><![CDATA[http://vaosa-vm1.aoc.nrao.edu/ivoa-dal/siapv2-vao/sync?
+                    REQUEST=accessData&FORMAT=image/fits&PubDID=ivo%3A%2F%2Fnrao%2Fvo%23image-m0RXVX]]></TD>
+             <TD>image/fits</TD>
+             <TD>20471920</TD>
+             <TD></TD>
+             <TD>180.474988373509</TD>
+             <TD>-18.8799902066141</TD>
+             <TD>0.0097</TD>
+             <TD>POLYGON ICRS 180.4607706 -18.8991286 180.4607706 -18.8720092
+                 180.4894354 -18.8720092 180.4894354 -18.8991286</TD>
+             <TD>3.6e-5</TD>
+             <TD>55709.129226</TD>
+             <TD>55709.129226</TD>
+             <TD></TD>
+             <TD></TD>
+             <TD>0.000874109339630009</TD>
+             <TD>0.000872463699874965</TD>
+             <TD>29753.745800131965</TD>
+             <TD>phot.flux</TD>
+             <TD>I</TD>
+             <TD>ALMA</TD>
+             <TD/>
+           </TR>
+           <TR>
+             <TD>image</TD>
+             <TD>1</TD>
+             <TD>ALMA_test</TD>
+             <TD>ALMA test data: Antennae_South CO3_2Line  full_dispersion_map</TD>
              <TD>ivo://nrao/vo#siav2model:381</TD>
              <TD><![CDATA[http://vaosa-vm1.aoc.nrao.edu/ivoa-dal/siapv2-vao/sync?
-                    REQUEST=accessData&FORMAT=image/fits&PubDID=ivo%3A%2F%2Fnrao%2Fvo%23siav2model%3A381]]></TD> 
-             <TD>image/fits</TD> 
-             <TD>2250000</TD> 
-             <TD></TD> 
-             <TD>180.475103</TD> 
-             <TD>-18.8855694</TD> 
-             <TD>0.027</TD> 
-             <TD>POLYGON ICRS 180.4607706 -18.8991286 180.4607706 -18.8720092 
-                 180.4894354 -18.8720092 180.4894354 -18.8991286</TD> 
-             <TD>3.6e-5</TD> 
-             <TD>55709.129226</TD> 
-             <TD>55709.129226</TD> 
-             <TD></TD> 
-             <TD/> 
-             <TD>0.000871035586716119</TD> 
-             <TD>0.000874109339630009</TD> 
-             <TD>29753.745800131965</TD> 
-             <TD>phot.flux</TD> 
-             <TD>I</TD> 
-             <TD>ALMA</TD> 
-             <TD/> 
-           </TR> 
-           <TR>
-             <TD>image</TD> 
-             <TD>1</TD> 
-             <TD>ALMA_test</TD> 
-             <TD>ALMA test data:  Antennae_South.CO3_2Line.Clean.pcal1.image.mom.weighted_dispersion_coord.fits</TD>  
-             <TD>ivo://nrao/vo#siav2model:381</TD> 
-             <TD><![CDATA[http://vaosa-vm1.aoc.nrao.edu/ivoa-dal/siapv2-vao/sync?
-                     REQUEST=accessData&FORMAT=image/fits&PubDID=ivo%3A%2F%2Fnrao%2Fvo%23image-ByCXy3]]></TD> 
-             <TD>image/fits</TD> 
-             <TD>292456</TD> 
-             <TD></TD> 
-             <TD>180.474988373509</TD> 
-             <TD>-18.8799902066141</TD> 
-             <TD>0.0097</TD> 
+                    REQUEST=accessData&FORMAT=image/fits&PubDID=ivo%3A%2F%2Fnrao%2Fvo%23siav2model%3A381]]></TD>
+             <TD>image/fits</TD>
+             <TD>2250000</TD>
+             <TD></TD>
+             <TD>180.475103</TD>
+             <TD>-18.8855694</TD>
+             <TD>0.027</TD>
              <TD>POLYGON ICRS 180.4607706 -18.8991286 180.4607706 -18.8720092
-                 180.4894354 -18.8720092 180.4894354 -18.8991286</TD> 
-             <TD>3.6e-5</TD> 
-             <TD>55709.129226</TD> 
-             <TD>55709.129226</TD> 
-             <TD></TD> 
-             <TD></TD> 
-             <TD>0.000870797535056077</TD> 
-             <TD>0.000874109339630009</TD> 
-             <TD>29753.745800131965</TD> 
-             <TD>phot.flux</TD> 
-             <TD>I</TD> 
-             <TD>ALMA</TD> 
-             <TD/> 
-         </TR> 
-        </TABLEDATA> 
-     </DATA> 
-    </TABLE> 
-  </RESOURCE> 
+                 180.4894354 -18.8720092 180.4894354 -18.8991286</TD>
+             <TD>3.6e-5</TD>
+             <TD>55709.129226</TD>
+             <TD>55709.129226</TD>
+             <TD></TD>
+             <TD/>
+             <TD>0.000871035586716119</TD>
+             <TD>0.000874109339630009</TD>
+             <TD>29753.745800131965</TD>
+             <TD>phot.flux</TD>
+             <TD>I</TD>
+             <TD>ALMA</TD>
+             <TD/>
+           </TR>
+           <TR>
+             <TD>image</TD>
+             <TD>1</TD>
+             <TD>ALMA_test</TD>
+             <TD>ALMA test data:  Antennae_South.CO3_2Line.Clean.pcal1.image.mom.weighted_dispersion_coord.fits</TD>
+             <TD>ivo://nrao/vo#siav2model:381</TD>
+             <TD><![CDATA[http://vaosa-vm1.aoc.nrao.edu/ivoa-dal/siapv2-vao/sync?
+                     REQUEST=accessData&FORMAT=image/fits&PubDID=ivo%3A%2F%2Fnrao%2Fvo%23image-ByCXy3]]></TD>
+             <TD>image/fits</TD>
+             <TD>292456</TD>
+             <TD></TD>
+             <TD>180.474988373509</TD>
+             <TD>-18.8799902066141</TD>
+             <TD>0.0097</TD>
+             <TD>POLYGON ICRS 180.4607706 -18.8991286 180.4607706 -18.8720092
+                 180.4894354 -18.8720092 180.4894354 -18.8991286</TD>
+             <TD>3.6e-5</TD>
+             <TD>55709.129226</TD>
+             <TD>55709.129226</TD>
+             <TD></TD>
+             <TD></TD>
+             <TD>0.000870797535056077</TD>
+             <TD>0.000874109339630009</TD>
+             <TD>29753.745800131965</TD>
+             <TD>phot.flux</TD>
+             <TD>I</TD>
+             <TD>ALMA</TD>
+             <TD/>
+         </TR>
+        </TABLEDATA>
+     </DATA>
+    </TABLE>
+  </RESOURCE>
 </VOTABLE>
 \end{lstlisting}
 \appendix
 \section{Changes}
 \subsection{REC-SIA-2.0-20151223}
-Fix typos.
+Fix typos.\todo{Let's remove the SIA history here.  DAP is a new standard and has its own history.  The SIA history can go to acknowledgements or the introduction, I guess.}
 \subsection{PR-SIA-2.0-20151029}
 Changed open-ended interval bounds from NaN to -Inf or +Inf for consistency with VOTable double values. \\ \\
 Formatting fixes and regenerated table of contents.
@@ -1218,7 +1220,7 @@ Editorial and organisational changes from TCG review.
 \subsection{PR-SIA-2.0-20150610}
 Changed the serialisation of numeric ranges in parameter values to use standard VOTable array format (space s eparated) so that parameters can be correctly described as accepting an array of numeric values rather than a string. Removed support for ISO8601 (timestamp) format from TIME parameter. \\ \\
 Added subsection for MAXREC parameter. Changed use of UNKNOWN (concept from STC) coordinate system to a plain text description. Clarified that numeric arguments to POS are floating point values (in examples and text). \\ \\
-Moved section comparing SIA-1.0 and SIA-2.0 earlier in the introduction. \\ \\ 
+Moved section comparing SIA-1.0 and SIA-2.0 earlier in the introduction. \\ \\
 Added example output for queries. \\ \\
 Add restriction that {query} resources must be a sibling of VOSI-capabilities. \\ \\
 Many minor clarifications and tweaks as recommended by TCG review.
@@ -1234,8 +1236,8 @@ Promoted from WD to PR.
 \subsection{WD-SIA-2.0-20140707}
 Added query parameters for remaining useful ObsCore fields and clarified that all query parameters are required and how null values for ObsCore fields are treated in queries. \\ \\
 Removed REQUEST parameter, as per discussions at the interop. \\ \\
-Removed standard error message labels for authentication and authorization failures since these are difficult to implement consistently in different web service platforms.\\ \\ 
-Changed the error message strings to use the word Fault (following DataLink and GWS-WG style) since Error has specific meaning in some platforms. 
+Removed standard error message labels for authentication and authorization failures since these are difficult to implement consistently in different web service platforms.\\ \\
+Changed the error message strings to use the word Fault (following DataLink and GWS-WG style) since Error has specific meaning in some platforms.
 \subsection{WD-SIA-2.0-20140505}
 FORMAT and UPLOAD parameters are still TBD. \\ \\
 Added FOV, SPATRES, and EXPTIME parameters to query ObsCore fields s\_fov, s\_resolution, and t\_exptime respectively. \\ \\
@@ -1251,6 +1253,6 @@ Added standard error message strings. \\ \\
 This is a major rewrite of previous drafts after several meetings, prototypes, and architectural changes. A real change log will begin with the next draft.
 
 
-\bibliography{ivoatex/ivoabib}
+\bibliography{ivoatex/ivoabib,ivoatex/docrepo}
 
 \end{document}

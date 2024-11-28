@@ -1,0 +1,16 @@
+
+<archdiag xmlns="http://ivoa.net/archdiag">
+  <rec name="VODataService" x="57.5" y="350" w="85"/>
+
+  <rec name="VOTable" x="270" y="325" w="50"/>
+  <rec name="DALI" x="310" y="290" w="33"/>
+
+  <rec name="DataLink" x="628" y="405" w="53"/>
+  <rec name="SODA" x="681" y="430" w="38"/>
+  <rec name="ObsCore" x="619" y="180" w="52"/>
+
+  <rec name="VOSI" x="568" y="435" w="34"/>
+
+  <thisrec name="DAP" x="686" y="280" w="28"/>
+
+</archdiag>
